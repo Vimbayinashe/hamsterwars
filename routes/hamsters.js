@@ -88,6 +88,7 @@ router.get('/:id', async (req, res) => {
 
 
 // Updaterar ett hamsterobjects egenskaper: wins, defeats och +1 på games.
+
 router.put('/:id/result', async (req, res) => {
 
     try {
@@ -114,9 +115,17 @@ router.put('/:id/result', async (req, res) => {
         }
          
         // uppdatera hamsterobjekts egenskaper
-        if (req.body.win)   hamster.wins++            
-        else if (req.body.defeat)   hamster.defeats++
-        hamster.games++
+        // det tas emot endast Boolean värden (See note below)
+        if (req.body.win == true) {
+            hamster.wins++            
+            hamster.games++
+        }  
+        else if (req.body.defeat == true) {
+            hamster.defeats++
+            hamster.games++
+        } else {
+            throw err = "Invalid input"
+        }
         
         // uppdatera hamsterobjektet i firestore
         db
@@ -142,6 +151,22 @@ router.put('/:id/result', async (req, res) => {
 
 
 })
+
+/** Exempel req.body formatet:
+ * 
+    {
+        "win" : true,
+        "defeat" : false
+    }
+        OR
+    {
+        "win" : 1,
+        "defeat" : 0
+    }
+*   
+*   Jag har använt Boolean värden för att ta emot säkrare input i backend 
+*
+ */
 
 // http://localhost:3000/hamsters/11/result
 
