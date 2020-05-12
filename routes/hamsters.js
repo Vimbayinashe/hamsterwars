@@ -26,6 +26,7 @@ router.get('/', async (req, res) => {
 // http://localhost:3000/hamsters/
 
 
+
 // hämta ett hamsterobjekt
 router.get('/:id', async (req, res) => {
 
@@ -86,38 +87,61 @@ router.get('/:id', async (req, res) => {
 
 
 
-// hämta ett slumpat hamsterobject 
-// router.get('/random/', async (req, res) => {
+// Updaterar ett hamsterobjects egenskaper: wins, defeats och +1 på games.
+router.put('/:id/result', async (req, res) => {
 
-//     try {
+    try {
+
+        let id = req.params.id;
+        console.log(id);
+        console.log(typeof(id))
+        console.log(req.body);
+        // res.send({ msg: req.params.id })
         
-//         if (req.path == "/random") {
+        let snapShot = await db
+        .collection('hamsters')
+        .doc(req.params.id)
+        .get();
+        
+        // hämta hamsters uppgifter
+        let hamster = snapShot.data().hamster;
+        console.log(hamster);
+        
 
-//             let hamsters = [];
-            
-//             let snapShot = await db
-//             .collection('hamsters')
-//             .get();
-            
-//             snapShot.forEach(hamster => {
-//                 hamsters.push(hamster.data())
-//             })
-            
-//             let random = Math.floor(Math.random() * hamsters.length);
-//             let randomHamster = hamsters[random];
-            
-//             console.log(randomHamster.hamster.id);
+        // kolla om data är ogiltig
+        if (req.body.win === req.body.defeat) {
+            throw err = "Win and defeat cannot be the same."
+        }
+         
+        // uppdatera hamsterobjekts egenskaper
+        if (req.body.win)   hamster.wins++            
+        else if (req.body.defeat)   hamster.defeats++
+        hamster.games++
+        
+        // uppdatera hamsterobjektet i firestore
+        db
+        .collection('hamsters')
+        .doc(JSON.stringify(hamster.id))        //snapShot.id & id did NOT work
+        .update({ hamster })
+        // .set(hamster)        //did not work after first update
+        // .then(res.send({ msg: 'Hamster updated.'}))
+        .catch(err => console.error(err))
+        
+        res.status(200).send({ 
+            msg: 'Hamster updated', 
+            hamster: hamster, 
+            body: req.body 
+        })
 
-//             res.status(200).send({ hamster: randomHamster })
-//         }
-            
-//     }
-//     catch (err) {
-//         console.error(err);
-//         res.status(400).send({ msg: err })        
-//     }
+    }
 
-// })
+    catch (err) {
+        console.error(err);
+        res.status(400).send({ msg: err })        
+    }
+
+
+})
 
 
 
