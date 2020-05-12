@@ -9,38 +9,115 @@ const router = new Router();
 // hämta en array med samtliga hamsterobject.
 router.get('/', async (req, res) => {
 
-    let docs = [];
+    let hamsters = [];
 
     let snapShot = await db
         .collection('hamsters')
         .get();
     
     snapShot.forEach(doc => {
-        docs.push(doc.data())
+        hamsters.push(doc.data())
     })
 
-    res.send({ hamsters: docs })
+    res.send({ hamsters: hamsters })
 
 })
 
 // http://localhost:3000/hamsters/
 
 
-// hämta ett hamsterobject med efterfrågat id
+// hämta ett hamsterobjekt
 router.get('/:id', async (req, res) => {
 
-    let snapShot = await db
-        .collection('hamsters')
-        .doc(req.params.id)
-        .get();
-    
-    // hämta hamsters uppgifter
-    let hamster = snapShot.data().hamster;
-    console.log(hamster);
- 
-    res.send({ hamster: hamster })
+    try {
+        
+        // hämta ett slumpat hamsterobjekt 
+        if (req.path == "/random" || req.path == "/random/") {
+
+            let hamsters = [];
+            
+            let snapShot = await db
+            .collection('hamsters')
+            .get();
+            
+            snapShot.forEach(hamster => {
+                hamsters.push(hamster.data())
+            })
+            
+            let random = Math.floor(Math.random() * hamsters.length);
+            let randomHamster = hamsters[random];
+            
+            console.log(randomHamster.hamster.id);
+
+            res.status(200).send({ hamster: randomHamster })
+
+        } else {
+
+            // hämta ett hamsterobject med efterfrågat id
+          
+            let snapShot = await db
+            .collection('hamsters')
+            .doc(req.params.id)
+            .get();
+                        
+            // kolla att hamsterobjekt med vald id finns
+            if (snapShot.data()) {
+                
+                // hämta hamsters uppgifter
+                let hamster = snapShot.data().hamster;
+                // console.log(hamster);
+                res.status(200).send({ hamster: hamster })
+                
+            } else {
+                res.status(404).send( { msg: `This hamster does not exist in our database.`})
+            }
+
+        }
+        
+    }
+    catch (err) {
+        console.error(err);
+        res.status(400).send({ msg: err })        
+    }
 
 })
+
+// GET => http://localhost:3000/hamsters/5 or /random
+
+
+
+// hämta ett slumpat hamsterobject 
+// router.get('/random/', async (req, res) => {
+
+//     try {
+        
+//         if (req.path == "/random") {
+
+//             let hamsters = [];
+            
+//             let snapShot = await db
+//             .collection('hamsters')
+//             .get();
+            
+//             snapShot.forEach(hamster => {
+//                 hamsters.push(hamster.data())
+//             })
+            
+//             let random = Math.floor(Math.random() * hamsters.length);
+//             let randomHamster = hamsters[random];
+            
+//             console.log(randomHamster.hamster.id);
+
+//             res.status(200).send({ hamster: randomHamster })
+//         }
+            
+//     }
+//     catch (err) {
+//         console.error(err);
+//         res.status(400).send({ msg: err })        
+//     }
+
+// })
 
 
 
