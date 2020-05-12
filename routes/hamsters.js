@@ -143,7 +143,7 @@ router.put('/:id/result', async (req, res) => {
 
 })
 
-
+// http://localhost:3000/hamsters/11/result
 
 
 

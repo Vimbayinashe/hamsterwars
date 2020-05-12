@@ -12,9 +12,11 @@ app.use(express.json());
 // Routes
 const assetsRoute = require('./routes/assets');
 const hamstersRoute = require('./routes/hamsters');
+const chartsRoute = require('./routes/charts');
 
 app.use('/assets', assetsRoute);
 app.use('/hamsters', hamstersRoute);
+app.use('/charts', chartsRoute);
 
 
 
