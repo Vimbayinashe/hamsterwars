@@ -171,6 +171,42 @@ router.put('/:id/result', async (req, res) => {
 // http://localhost:3000/hamsters/11/result
 
 
+// hämta två eller flera slumpade hamstrar
+router.get('/random/:amount', async (req, res) => {
+
+    try {
+        
+        let hamsters = [];
+        
+        let snapShot = await db
+        .collection('hamsters')
+        .get();
+        
+        snapShot.forEach(doc => {
+            hamsters.push(doc.data().hamster)
+        })
+        
+        let randomHamsters = [];
+        
+        // hämta :amount slumpade hamstrar
+        for (let i=0; i < req.params.amount; i++) {
+            
+            let random = Math.floor(Math.random() * hamsters.length);
+
+            let anyHamster = hamsters.splice(random, 1);
+
+            randomHamsters.push(anyHamster[0]);
+    
+        }
+        
+        res.send({ hamsters: randomHamsters })
+        
+    } catch (err) {
+        console.error(err);
+        res.status(400).send({ msg: err })   
+    }
+})
+
 
 // send data.json to firestore
 router.post('/create-database', async (req, res) => {
