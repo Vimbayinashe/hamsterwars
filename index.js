@@ -1,4 +1,7 @@
 const express = require('express');
+const { auth } = require('./auth');
+require('dotenv/config');
+
 
 const app = express();
 
@@ -7,6 +10,10 @@ app.use(express.static('public'))
 
 // convert post.body -> json
 app.use(express.json());
+
+
+// Authorization middleware
+app.use(auth);
 
 
 // Routes
@@ -19,6 +26,9 @@ app.use('/assets', assetsRoute);
 app.use('/hamsters', hamstersRoute);
 app.use('/charts', chartsRoute);
 app.use('/games', gamesRoute);
+
+
+
 
 
 
