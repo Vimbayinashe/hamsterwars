@@ -17,13 +17,38 @@ router.post('/', async (req, res) => {
     
     console.log(match);
 
+    // hämta data från firestore 'hamsters' collection
+    let snapShot = await db
+        .collection('hamsters')
+        .get();
+    
+    // räkna längden av arrray
+    let length = snapShot.size
+
+    console.log(length);
+    
+
     // skicka matchen till firestore
-    db
-    .collection('games')
-    .doc()
-    .set({ match })
-    .res.status(201).send({  })
-    .catch(err => console.error(err))
+    // db
+    // .collection('games')
+    // .doc()
+    // .set({ match })
+    // .res.status(201).send({  })
+    // .catch(err => console.error(err))
+
+
+    /**
+     * receive req.body { win: ID, defeat: ID }
+     * 
+     * update hamster1.wins & put 
+     * 
+     * update hamster2.wins & put
+     * 
+     * create a new Games object (generate UUID)
+     * 
+     * send a new Games object
+     * 
+     */
 
 
 })

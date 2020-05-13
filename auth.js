@@ -6,7 +6,7 @@ const auth = (req, res, next) => {
     if (req.method !== "GET") {
 
         if(APIKey === req.headers['authorization']) {
-            console.log(APIKey);
+            // console.log(APIKey);
             next();
         } else {
             console.log('submitted: ' + req.headers['authorization']);
