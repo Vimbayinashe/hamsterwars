@@ -24,4 +24,48 @@ router.get('/total', async(req, res) => {
 })
 
 
+// 
+router.get('/age', async (req, res) => {
+
+    try {
+
+        let hamsters = [];
+
+        // hämta hamstrar
+        let snapShot = await db
+            .collection('hamsters')
+            .get();
+        
+        snapShot.forEach(doc => {
+            hamsters.push(doc.data().hamster)
+        })
+
+        // summa av hamstrars ålder
+        let totalAge = hamsters.reduce(
+            (acc, value) => acc + value.age
+            , 0
+        )
+            
+        let amount = hamsters.length;
+        let averageAge = totalAge / amount;
+
+        // sortera hamstrar enligt ålders (asc)
+        hamsters.sort((a,b) => a.age - b.age);
+
+        let minimumAge = hamsters[0].age;
+        let maximumAge = hamsters[amount - 1].age;
+        
+        res.send({ age: {
+            minimum: minimumAge,
+            average: averageAge,
+            maximum: maximumAge
+        } })
+            
+    } catch (err) {
+        console.error(err);
+        res.status(400).send({ msg: err })
+    }
+})
+
+
 module.exports = router;
