@@ -7,6 +7,8 @@ const app = express();
 
 // servar React-frontend senare.
 app.use(express.static('public'))
+app.use(express.static('assets'))   // work further
+
 
 // convert post.body -> json
 app.use(express.json());
