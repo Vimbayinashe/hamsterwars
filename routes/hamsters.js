@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
         .get();
     
     snapShot.forEach(doc => {
-        hamsters.push(doc.data())
+        hamsters.push(doc.data().hamster)
     })
 
     res.send({ hamsters: hamsters })
