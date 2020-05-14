@@ -171,6 +171,7 @@ router.put('/:id/result', async (req, res) => {
 // http://localhost:3000/hamsters/11/result
 
 
+
 // hämta två eller flera slumpade hamstrar
 router.get('/random/:amount', async (req, res) => {
 
@@ -240,6 +241,45 @@ router.post('/create-database', async (req, res) => {
 })
 
 // POST => http://localhost:3000/hamsters/create-database
+
+
+// ladda upp en ny hamster objekt
+
+router.post('/new', async (req, res) => {
+
+    try {
+
+        // kolla hur många hamstrar redan finns -> välja id
+
+        let snapShot = await db
+            .collection('hamsters')
+            .get()
+
+        let length = snapShot.size;
+        
+        
+        // skapa ny hamstar objekt
+
+        let id = length + 1;
+        
+        let hamster = req.body;
+        hamster.id = id;
+        hamster.wins = hamster.defeats = hamster.games = 0;
+        
+        // skicka objekt till firestore
+        db
+        .collection('hamsters')
+        .doc(JSON.stringify(id))
+        .set({ hamster })
+        .then( res.status(201).send({ msg: `New hamster ${id} created!` }) ) 
+    
+    } catch (err) {
+        console.error(err);
+        res.status(400).send({ msg: err })
+    }
+
+})
+
 
 
 module.exports = router;
