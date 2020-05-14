@@ -3,7 +3,7 @@ const { auth, db } = require('./../firebase');
 
 const router = new Router();
 
-// Returnerar ett statsobject med totalt antal matcher som hållits
+// Returnerar ett statsobjekt med totalt antal matcher som hållits
 router.get('/total', async(req, res) => {
 
     try {
@@ -24,7 +24,7 @@ router.get('/total', async(req, res) => {
 })
 
 
-// 
+// returnerar ett statsobjekt med ålders statistiks
 router.get('/age', async (req, res) => {
 
     try {
@@ -45,9 +45,10 @@ router.get('/age', async (req, res) => {
             (acc, value) => acc + value.age
             , 0
         )
-            
+        
+        // hitta medelålders med 2 d.p. som en siffra
         let amount = hamsters.length;
-        let averageAge = totalAge / amount;
+        let averageAge = parseFloat((totalAge / amount).toFixed(2));
 
         // sortera hamstrar enligt ålders (asc)
         hamsters.sort((a,b) => a.age - b.age);

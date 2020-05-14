@@ -2,7 +2,6 @@ const { Router } = require('express');
 const { auth, db } = require('./../firebase');
 const fs = require('fs');
 
-
 const router = new Router();
 
 
@@ -137,9 +136,7 @@ router.put('/:id/result', async (req, res) => {
         .catch(err => console.error(err))
         
         res.status(200).send({ 
-            msg: 'Hamster updated', 
-            hamster: hamster, 
-            body: req.body 
+            msg: `Hamster ${id} updated`
         })
 
     }
@@ -209,7 +206,7 @@ router.get('/random/:amount', async (req, res) => {
 })
 
 
-// send data.json to firestore
+// skicka och spara data.json i firestore
 router.post('/create-database', async (req, res) => {
 
     try {
@@ -221,12 +218,11 @@ router.post('/create-database', async (req, res) => {
             console.log(typeof(data));
             console.log(typeof(hamsters));
 
-            // update firestore
+            // uppdatera firestore
             hamsters.forEach(hamster => {
                 db.collection('hamsters').doc(JSON.stringify(hamster.id)).set({ hamster })
                 console.log(typeof(hamster));
                 console.log(hamster);
-                // console.log(element.id + ". " + element.name + " created!")
             });
 
             res.send({ array: hamsters})
@@ -244,13 +240,11 @@ router.post('/create-database', async (req, res) => {
 
 
 // ladda upp en ny hamster objekt
-
 router.post('/new', async (req, res) => {
 
     try {
 
         // kolla hur många hamstrar redan finns -> välja id
-
         let snapShot = await db
             .collection('hamsters')
             .get()
@@ -259,7 +253,6 @@ router.post('/new', async (req, res) => {
         
         
         // skapa ny hamstar objekt
-
         let id = length + 1;
         
         let hamster = req.body;
@@ -279,6 +272,17 @@ router.post('/new', async (req, res) => {
     }
 
 })
+
+/** Exempel data format
+ * 
+ * {
+    "loves": "Running that wheeeeeeeeeeeeeeeel!",
+    "age": 5,
+    "favFood": "persika",
+    "name": "Tulau",
+    "imgName": "hamster-Y.jpg"
+}
+ */
 
 
 
