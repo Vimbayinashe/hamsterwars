@@ -25,11 +25,13 @@ const hamstersRoute = require('./routes/hamsters');
 const chartsRoute = require('./routes/charts');
 const gamesRoute = require('./routes/games');
 const statsRoute = require('./routes/stats');
+const imagesRoute = require('./routes/images');
 
 app.use('/hamsters', hamstersRoute);
 app.use('/charts', chartsRoute);
 app.use('/games', gamesRoute);
 app.use('/stats', statsRoute);
+app.use('/images', imagesRoute);
 
 
 
