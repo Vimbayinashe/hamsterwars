@@ -11,7 +11,7 @@ router.post('/upload', async (req, res) => {
 
         let image;
         // read files in 'assets' folder
-        fs.readFile('./hamsters/hamster-1.jpg', 'utf8', (err, data) => {
+        fs.readFile(_dirname + '../hamsters/hamster-1.jpg', 'utf8', (err, data) => {
             if(err) throw err;
             image = data;
         })
@@ -22,6 +22,8 @@ router.post('/upload', async (req, res) => {
         // upload
         let upload = storageRef.put(image)
         upload
+
+
 
         res.send({ msg: "Trying to send"})
 

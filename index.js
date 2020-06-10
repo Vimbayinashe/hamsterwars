@@ -9,7 +9,7 @@ const app = express();
 app.use(express.static('public'))
 
 // servar bilderna via en static route
-app.use(express.static('assets'))   
+// app.use(express.static('assets'))   
 
 
 // convert post.body -> json
