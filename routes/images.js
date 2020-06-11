@@ -1,31 +1,37 @@
 const { Router } = require('express');
-const { auth, db, storage } = require('./../firebase');
-const { fs } = require('fs');
+const { auth, db, storage, bucket, gcBucket } = require('./../firebase');
+const fs = require('fs');
+
 
 const router = new Router();
 
-// skicka bilder to firebase storage    **INCOMPLETE
-router.post('/upload', async (req, res) => {
-
+// skicka bilder to firebase storage    
+router.post('/upload-all', async (req, res) => {
+    console.log('Received POST /upload request');
+    
     try {
 
-        let image;
-        // read files in 'assets' folder
-        fs.readFile(_dirname + '../hamsters/hamster-1.jpg', 'utf8', (err, data) => {
-            if(err) throw err;
-            image = data;
-        })
+        let filePath = (__dirname + '/../public/assets');
 
+        fs.readdir(filePath, function (err, files) {
 
-        let storageRef = firebase.storage().ref('assets/' + image.name) //*** */
+            if (err) {
+                return console.log('Unable to scan directory: ' + err);
+            } 
 
-        // upload
-        let upload = storageRef.put(image)
-        upload
+            files.forEach(function (file) { // typeof(file) = string
+                console.log(file); 
 
+                gcBucket
+                .upload(__dirname + '/../public/assets/' + file, {
+                    destination: 'assets/' + file
+                })
+                
+            });
 
+        });
 
-        res.send({ msg: "Trying to send"})
+        res.status(201).send({ msg: "Pictures Uploaded" })
 
     } catch (err) {
         console.error(err);
@@ -35,4 +41,37 @@ router.post('/upload', async (req, res) => {
 })
 
 
+router.get('/download-all', async (req, res) => {
+
+    try {
+        let id = req.params.id;
+        console.log('GET picture: ', id);
+        
+        let image = await gcBucket.getFiles()
+ 
+        image[0].forEach(image => {
+            console.log(image.name);
+            gcBucket
+                .file(image.name)
+                .download({destination: image.name})
+        })
+
+        res.status(201).send({ msg: 'Hamster images successfully downloaded.'})
+        
+    } catch (err) {
+        console.error(err);
+        res.status(400).send({ msg: err })  
+    }
+    
+})
+
+
 module.exports = router;
+
+
+/** Downloading one image
+ * 
+ *  let image =  await gcBucket
+    .file('assets/hamster-3.jpg')
+    .download({destination: 'assets/hamster-ne88w.jpg'})
+ */

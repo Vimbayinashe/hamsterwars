@@ -7,9 +7,10 @@ const app = express();
 
 // servar React-frontend senare.
 app.use(express.static('public'))
+app.use(express.static(__dirname + '/../build'))
 
 // servar bilderna via en static route
-// app.use(express.static('assets'))   
+app.use('/assets', express.static('public/assets'))  
 
 
 // convert post.body -> json
@@ -27,14 +28,11 @@ const gamesRoute = require('./routes/games');
 const statsRoute = require('./routes/stats');
 const imagesRoute = require('./routes/images');
 
-app.use('/hamsters', hamstersRoute);
-app.use('/charts', chartsRoute);
-app.use('/games', gamesRoute);
-app.use('/stats', statsRoute);
-app.use('/images', imagesRoute);
-
-
-
+app.use('/api/hamsters', hamstersRoute);
+app.use('/api/charts', chartsRoute);
+app.use('/api/games', gamesRoute);
+app.use('/api/stats', statsRoute);
+app.use('/api/images', imagesRoute);
 
 
 
