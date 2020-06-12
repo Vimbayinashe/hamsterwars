@@ -132,7 +132,6 @@ router.put('/:id/result', async (req, res) => {
         .doc(JSON.stringify(hamster.id))        //snapShot.id & id did NOT work
         .update({ hamster })
         // .set(hamster)        //did not work after first update
-        // .then(res.send({ msg: 'Hamster updated.'}))
         .catch(err => console.error(err))
         
         res.status(200).send({ 

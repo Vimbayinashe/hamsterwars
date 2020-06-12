@@ -99,8 +99,6 @@ router.post('/', async (req, res) => {
             winner: { hamsterId: req.body.win }
         }
         
-        // res.send({ game: game })
-
         // skicka matchen till firestore
         db
         .collection('games')
